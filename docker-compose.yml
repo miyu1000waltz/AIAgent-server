@@ -1,0 +1,17 @@
+services:
+  llm:
+    build: .
+    ports:
+      # StyleBertVits2-server(8100)と被らないよう8200を使う
+      - "8200:8200"
+    # GOOGLE_API_KEY などは .env から読み込む(.env.example をコピーして作成)
+    env_file:
+      - .env
+    # イメージにcurlが無いためpython3(標準ライブラリのみ)で疎通確認する
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/health', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
