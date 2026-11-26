@@ -1,5 +1,5 @@
 services:
-  llm:
+  aiagent:
     build: .
     ports:
       # StyleBertVits2-server(8100)と被らないよう8200を使う
